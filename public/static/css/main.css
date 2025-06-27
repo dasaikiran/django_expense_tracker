@@ -87,12 +87,12 @@ h4 {
   border-radius: 5px;
 }
 
-.inc-exp-container > div {
+.inc-exp-container>div {
   flex: 1;
   text-align: center;
 }
 
-.inc-exp-container > div:first-of-type {
+.inc-exp-container>div:first-of-type {
   border-right: 1px solid var(--border-secondary-color);
 }
 
@@ -196,12 +196,14 @@ input[type="number"] {
 .notification-container {
   background-color: var(--minus-color);
   color: var(--background-secondary-color);
-  border-radius: 5px 5px 0 0;
-  padding: 15px 20px;
+  border-radius: 5px;
   position: fixed;
-  bottom: 0;
+  top: 30px;
+  right: 30px;
+  padding: 15px 20px;
   opacity: 0;
   transition: opacity 0.3s ease;
+  z-index: 9999;
 }
 
 .notification-container.show {
@@ -210,4 +212,22 @@ input[type="number"] {
 
 .notification-container p {
   margin: 0;
+}
+
+.notification-container #remove {
+  border: none;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  color: black;
+  font-size: 15px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  cursor: pointer;
 }

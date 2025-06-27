@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expense Tracker</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="/media/css/main.css">
 </head>
 <body>
@@ -16,33 +18,41 @@
         />
         <div class="balance-container">
           <h2>Your Balance</h2>
-          <h2 id="balance" class="balance">$0.00</h2>
+          <h2 id="balance" class="balance">${{ current_balance.current_balance}}</h2>
         </div>
       </div>
       <div class="inc-exp-container">
         <div>
           <h4>Income</h4>
-          <p id="money-plus" class="money plus">+$0.00</p>
+          <p id="money-plus" class="money plus">+${{income}}</p>
         </div>
         <div>
           <h4>Expenses</h4>
-          <p id="money-minus" class="money minus">-$0.00</p>
+          <p id="money-minus" class="money minus">-${{expense}}</p>
         </div>
       </div>
       <h3>History</h3>
-      <ul id="list" class="list"></ul>
+      <ul id="list" class="list">
+        {% for transaction in transactions %}
+        <li class="{% if transaction.expense_type == 'DEBIT'%} minus {% else %} plus {% endif%}">
+          {{transaction.description}} <span>{{transaction.amount}}</span><a href="{% url 'delete' transaction.id %}" class="delete-btn" ><i class="fa-solid fa-trash"></i></a>
+        </li>
+        {% endfor %}
+      </ul>
       <h3>Add new transaction</h3>
-      <form id="form">
+
+      <form method="POST" id="form">
+        {% csrf_token %}
         <div class="form-control">
           <label for="text">Description</label>
-          <input type="text" id="text" placeholder="Enter description..." />
+          <input type="text" name="description" id="text" placeholder="Enter description..." />
         </div>
         <div class="form-control">
           <label for="amount"
             >Amount <br />
             <small>(-100 = expense, 100 = income)</small></label
           >
-          <input type="number" id="amount" placeholder="Enter amount..." />
+          <input type="number" name="amount" id="amount" placeholder="Enter amount..." />
         </div>
         <button class="btn">Add transaction</button>
       </form>
@@ -50,6 +60,26 @@
     <!-- Notification -->
     <div class="notification-container" id="notification">
       <p>Please add a description and amount</p>
+      <button id="remove"><i class="fa-solid fa-xmark"></i></button>
     </div>
+    <script>
+document.getElementById('form').addEventListener('submit', function(e) {
+    const description = document.getElementById('text').value.trim();
+    const amount = document.getElementById('amount').value.trim();
+    if (!description || !amount) {
+      e.preventDefault();
+      document.getElementById('notification').classList.add('show');
+    } else if(amount == 0) {
+      e.preventDefault();
+      document.getElementById('notification').classList.add('show');
+      document.querySelector('#notification p').textContent = "The amount cannot be 0";
+    } else {
+        document.getElementById('notification').classList.remove('show');
+    }
+});
+document.getElementById('remove').addEventListener('click',(e)=>{
+  document.getElementById('notification').classList.remove('show');
+})
+</script>
 </body>
 </html>
