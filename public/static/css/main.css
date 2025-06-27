@@ -110,14 +110,21 @@ body {
   letter-spacing: 0.5px;
 }
 
-.balance {
+.balance-container .balance {
   font-size: 1.1rem;
-  font-weight: 700;
-  color: #0ff1ce;
+  font-weight: bold;
   letter-spacing: 1px;
   text-shadow: 0 2px 8px #0ff1ce55;
   transition: color 0.4s;
   margin-top: 0.2rem;
+}
+
+.balance-container .balance-plus {
+  color: #0ff1ce;
+}
+
+.balance-container .balance-minus {
+  color: #ff61a6;
 }
 
 .inc-exp-container {
