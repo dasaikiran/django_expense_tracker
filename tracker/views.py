@@ -23,10 +23,11 @@ def index(request):
         current_balance.current_balance += float(tracking_history.amount)
         current_balance.save()
         return redirect('/')
-    current_balance,_ = CurrentBalance.objects.get_or_create(id = 1)
+    current_balance = 0
     income = 0
     expense = 0
     for transaction in TrackingHistory.objects.all():
+        current_balance += transaction.amount
         if transaction.expense_type == "DEBIT":
             expense += transaction.amount
         else:

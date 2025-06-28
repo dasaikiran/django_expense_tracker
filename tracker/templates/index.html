@@ -38,17 +38,17 @@
         <img src="https://i.ibb.co/jfScDTC/budget.png" alt="Expense Tracker" class="logo-img" />
         <div class="balance-container animated-balance">
           <h2>Your Balance</h2>
-          <h2 id="balance" class="balance {% if current_balance.current_balance < 0 %} balance-minus {% else %} balance-plus {% endif %} ">${{ current_balance.current_balance}}</h2>
+          <h2 id="balance" class="balance {% if current_balance < 0 %} balance-minus {% else %} balance-plus {% endif %} ">₹{{current_balance}}</h2>
         </div>
       </div>
       <div class="inc-exp-container">
         <div>
           <h4>Income</h4>
-          <p id="money-plus" class="money plus">+${{income}}</p>
+          <p id="money-plus" class="money plus">₹ {{income}}</p>
         </div>
         <div>
           <h4>Expenses</h4>
-          <p id="money-minus" class="money minus">-${{expense}}</p>
+          <p id="money-minus" class="money minus">₹ {{expense}}</p>
         </div>
       </div>
       <h3 class="add-title">Add new transaction <span class="emoji">📝</span></h3>
@@ -99,6 +99,7 @@
         document.getElementById('notification').classList.add('show');
         document.querySelector('#notification p').textContent = "The amount cannot be 0";
       } else {
+        btn.disabled = true;
         document.getElementById('notification').classList.remove('show');
       }
     });
