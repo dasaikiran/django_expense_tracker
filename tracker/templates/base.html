@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .alert-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-width: 280px;
+            max-width: 350px;
+        }
+        .alert {
+            padding: 12px 20px;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 500;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            border: 1px solid transparent;
+            transition: background 0.3s, color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .alert-success {
+            background-color: #d1e7dd;
+            color: #0f5132;
+            border-color: #badbcc;
+        }
+        .alert-error, .alert-danger {
+            background-color: #f8d7da;
+            color: #842029;
+            border-color: #f5c2c7;
+        }
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #664d03;
+            border-color: #ffecb5;
+        }
+        .alert-info {
+            background-color: #cff4fc;
+            color: #055160;
+            border-color: #b6effb;
+        }
+        .alert .close-btn {
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-left: 12px;
+        }
+    </style>
+    {% block header_part %}
+    {% endblock %}
+</head>
+<body>
+    {% if messages %}
+    <div class="alert-container" id="alert-container">
+        {% for message in messages %}
+            <div class="alert 
+                {% if message.tags %}
+                    alert-{{ message.tags }}
+                {% else %}
+                    alert-info
+                {% endif %}
+            ">
+                <span>{{ message }}</span>
+                <button class="close-btn" onclick="this.parentElement.style.display='none';" aria-label="Close">&times;</button>
+            </div>
+        {% endfor %}
+    </div>
+    <script>
+        // Auto-hide alerts after 4 seconds
+        setTimeout(function() {
+            document.querySelectorAll('.alert').forEach(function(alert) {
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    alert.style.display = 'none';
+                }, 500);
+            });
+        }, 4000);
+    </script>
+    {% endif %}
+    {% block start %}
+    {% endblock %}
+</body>
+</html>

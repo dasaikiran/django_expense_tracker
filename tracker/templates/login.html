@@ -1,0 +1,22 @@
+{% extends 'base.html'%}
+{% block header_part%}
+  <link rel="stylesheet" href="/media/css/register.css">
+{% endblock%}
+{% block start%}
+    <div class="register-container">
+        <h2>Login</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required >
+            </div>
+            <div class="form-group">
+                <label for="password1">Password</label>
+                <input type="password" id="password1" name="password1" required>
+            </div>
+            <button type="submit" class="register-btn">Login</button>
+        </form>
+        <a href="{% url 'register' %}" class="login-link">Don't have an accont? Register</a>
+    </div>
+{% endblock %}

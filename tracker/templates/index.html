@@ -1,36 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Expense Tracker</title>
-  <style>
-    .owner-name {
-      font-family: 'Montserrat', 'Segoe UI', 'Arial', sans-serif;
-      font-size: 2rem;
-      font-weight: 800;
-      font-style: italic;
-      letter-spacing: 2px;
-      background: linear-gradient(90deg, #ff8a00, #e52e71, #4a90e2);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-shadow: 2px 2px 8px rgba(229, 46, 113, 0.15);
-      padding: 0 6px;
-      border-radius: 6px;
-      display: inline-block;
-      vertical-align: middle;
-    }
-  </style>
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% extends 'base.html' %}
+{% block header_part%}
   <link rel="stylesheet" href="/media/css/main.css">
-</head>
+{% endblock%}
+{% block start%}
 
-<body>
   <h1 class="main-title"><span class="owner-name">D A Sai Kiran's</span> Expense Tracker <span class="emoji">💸</span></h1>
   <div class="main-flex">
     <div class="container glass">
@@ -107,6 +80,5 @@
       document.getElementById('notification').classList.remove('show');
     })
   </script>
-</body>
 
-</html>
+{% endblock %}

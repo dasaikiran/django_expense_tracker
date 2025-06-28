@@ -1,8 +1,51 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import TrackingHistory, CurrentBalance
+from django.contrib.auth.models import User
+from django.contrib import messages
+from django.contrib.auth import authenticate, login as auth_login
+from django.views.decorators.cache import never_cache
+
 
 # Create your views here.
+def register(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        if password1!=password2:
+            messages.error(request,"The passwords don't match")
+            return redirect('register')
+
+        if User.objects.filter(username = username).exists():
+            messages.error(request,"The username already exists")
+            return redirect('register')
+        
+        user = User.objects.create(
+            username = username,
+            email = email,
+        )
+        user.set_password(password1)
+        user.save()
+        messages.success(request,"Your Account is Successfully Registered")
+        return redirect('login')
+
+    return render(request,'register.html')
+
+def login(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password1 = request.POST.get('password1')
+        user = authenticate(request, username=username, password=password1)
+        if user is not None:
+            auth_login(request, user)
+            messages.success(request, "Logged in successfully")
+            return redirect('/')
+        else:
+            messages.error(request, "Invalid username or password")
+            return redirect('login')
+    return render(request, 'login.html')
 
 def index(request):
     if request.method == "POST":
