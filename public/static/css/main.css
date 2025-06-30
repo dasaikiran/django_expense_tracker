@@ -511,4 +511,45 @@ body {
   }
 }
 
+.logout-btn {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(90deg, #ff5858 0%, #f09819 100%);
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 22px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(255, 88, 88, 0.15);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+  margin-left: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  outline: none;
+  gap: 8px;
+}
+.logout-btn:hover, .logout-btn:focus {
+  transform: translateY(-2px) scale(1.04) rotate(-1deg);
+  box-shadow: 0 8px 24px rgba(255, 88, 88, 0.25);
+  background: linear-gradient(90deg, #f09819 0%, #ff5858 100%);
+}
+.logout-btn i {
+  font-size: 1.1em;
+  margin-right: 5px;
+  animation: logout-shake 1s infinite alternate;
+}
+@keyframes logout-shake {
+  0% { transform: rotate(0deg);}
+  100% { transform: rotate(-10deg);}
+}
+@media (max-width: 600px) {
+  .logout-btn {
+    width: 100%;
+    justify-content: center;
+    margin-left: 0;
+  }
+}
+
 /* --- End of Playful, Colorful Dark Mode CSS --- */

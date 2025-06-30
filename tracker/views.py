@@ -3,8 +3,11 @@ from django.http import HttpResponse
 from .models import TrackingHistory, CurrentBalance
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.views.decorators.cache import never_cache
+from django.contrib.auth.decorators import login_required
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver 
 
 
 # Create your views here.
@@ -47,6 +50,11 @@ def login(request):
             return redirect('login')
     return render(request, 'login.html')
 
+def logout(request):
+    auth_logout(request)
+    return redirect('login')
+
+@login_required(login_url="login")
 def index(request):
     if request.method == "POST":
         description = request.POST.get('description')
@@ -77,6 +85,14 @@ def index(request):
             income += transaction.amount
     context = {'income': income, 'expense': expense, 'transactions' : TrackingHistory.objects.all(),'current_balance': current_balance}
     return render(request, 'index.html',context)
+
+@receiver(post_save, sender = TrackingHistory)
+def history_obj_created(sender, instance, created, **kwargs):
+    print("History Created")
+
+@receiver(post_delete, sender = TrackingHistory)
+def history_obj_created(sender, instance, **kwargs):
+    print("History Deleted")
 
 def delete(request, id):
     transaction_obj = TrackingHistory.objects.get(id=id)

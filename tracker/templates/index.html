@@ -4,6 +4,21 @@
 {% endblock%}
 {% block start%}
 
+<div style="display: flex; justify-content: flex-end; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+    {% if user.is_authenticated %}
+      <div class="user-info" style="padding: 0.5rem 1rem; background: #f3f6fa; border-radius: 20px; font-weight: 500; color: #333; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; align-items: center; gap: 0.5rem;">
+        <i class="fa-solid fa-user" style="color: #4f8cff;"></i>
+        {{ user.username }}
+      </div>
+      <form method="POST" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="logout-btn" title="Logout" style="margin-left: 0.5rem;">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+      </form>
+    {% endif %}
+</div>
+
   <h1 class="main-title"><span class="owner-name">D A Sai Kiran's</span> Expense Tracker <span class="emoji">💸</span></h1>
   <div class="main-flex">
     <div class="container glass">
