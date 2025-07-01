@@ -8,6 +8,7 @@ from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver 
+from django.db.models import Count, Sum, Avg, Max, Min
 
 
 # Create your views here.
@@ -74,15 +75,15 @@ def index(request):
         current_balance.current_balance += float(tracking_history.amount)
         current_balance.save()
         return redirect('/')
-    current_balance = 0
-    income = 0
-    expense = 0
-    for transaction in TrackingHistory.objects.all():
-        current_balance += transaction.amount
-        if transaction.expense_type == "DEBIT":
-            expense += transaction.amount
-        else:
-            income += transaction.amount
+    current_balance = TrackingHistory.objects.aggregate(current_balance = Sum('amount'))['current_balance']
+    income = TrackingHistory.objects.filter(expense_type = "CREDIT").aggregate(income = Sum('amount'))['income']
+    expense = TrackingHistory.objects.filter(expense_type = "DEBIT").aggregate(expense = Sum('amount'))['expense']
+    if current_balance is None:
+        current_balance = 0
+    if income is None:
+        income = 0
+    if expense is None:
+        expense = 0
     context = {'income': income, 'expense': expense, 'transactions' : TrackingHistory.objects.all(),'current_balance': current_balance}
     return render(request, 'index.html',context)
 
