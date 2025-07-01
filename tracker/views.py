@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver 
 from django.db.models import Count, Sum, Avg, Max, Min
+from django.db import IntegrityError
 
 
 # Create your views here.
@@ -61,12 +62,17 @@ def index(request):
         description = request.POST.get('description')
         amount = request.POST.get('amount')
 
-        current_balance,_ = CurrentBalance.objects.get_or_create(id = 1)
+        try:
+            current_balance, _ = CurrentBalance.objects.get_or_create(user=request.user)
+        except IntegrityError:
+            current_balance = CurrentBalance.objects.filter(user=request.user).first()
+
         expense_type = "CREDIT"
         if float(amount)<0:
             expense_type = "DEBIT"
         
         tracking_history = TrackingHistory.objects.create(
+            user = request.user,
             amount = amount,
             expense_type = expense_type,
             current_balance = current_balance,
@@ -75,16 +81,22 @@ def index(request):
         current_balance.current_balance += float(tracking_history.amount)
         current_balance.save()
         return redirect('/')
-    current_balance = TrackingHistory.objects.aggregate(current_balance = Sum('amount'))['current_balance']
-    income = TrackingHistory.objects.filter(expense_type = "CREDIT").aggregate(income = Sum('amount'))['income']
-    expense = TrackingHistory.objects.filter(expense_type = "DEBIT").aggregate(expense = Sum('amount'))['expense']
+    current_balance = TrackingHistory.objects.filter(user = request.user).aggregate(current_balance = Sum('amount'))['current_balance']
+    income = TrackingHistory.objects.filter(user = request.user, expense_type = "CREDIT").aggregate(income = Sum('amount'))['income']
+    expense = TrackingHistory.objects.filter(user = request.user, expense_type = "DEBIT").aggregate(expense = Sum('amount'))['expense']
     if current_balance is None:
         current_balance = 0
     if income is None:
         income = 0
     if expense is None:
         expense = 0
-    context = {'income': income, 'expense': expense, 'transactions' : TrackingHistory.objects.all(),'current_balance': current_balance}
+    transactions = TrackingHistory.objects.filter(user=request.user).order_by('-created_at')
+    context = {
+        'income': income,
+        'expense': expense,
+        'transactions': transactions,
+        'current_balance': current_balance
+    }
     return render(request, 'index.html',context)
 
 @receiver(post_save, sender = TrackingHistory)
@@ -96,7 +108,7 @@ def history_obj_created(sender, instance, **kwargs):
     print("History Deleted")
 
 def delete(request, id):
-    transaction_obj = TrackingHistory.objects.get(id=id)
+    transaction_obj = TrackingHistory.objects.filter(user=request.user).get(id=id)
     if transaction_obj:
         transaction_obj.current_balance.current_balance -= transaction_obj.amount
         transaction_obj.current_balance.save()
